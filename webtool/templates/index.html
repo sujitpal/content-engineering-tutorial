@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block searchform %}
+<!-- turned off -->
+{% endblock %}
+
+{% block content %}
+<h1>Welcome to the Content Engineering Tutorial</h1>
+
+<p> 
+  <ul>
+    <li><a href="/search0">Baseline search</a> - lookup entire query over 3 fields</li>
+    <li><a href="/search1">Search Iteration #1</a> - maximize recall</li>
+    <li><a href="/search2">Search Iteration #2</a> - #2, but with additional stopwords</li>
+    <li><a href="/search3">Search Iteration #3</a> - baseline, with facets</li>
+    <li><a href="/search4">Search Iteration #4</a> - keyword aware query expansion, with facets</li>
+  </ul>
+</p>
+
+{% endblock %}

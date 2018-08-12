@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form class="form form-inline">
+    <dt>Search: </dt>
+    {% if meta["q"] is not none %}
+        <dd><input type="text" size="40" name="q" value="{{ meta["q"] }}"/></dd>
+    {% else %}
+        <dd><input type="text" size="40" name="q" placeholder="search"/></dd>
+    {% endif %}
+    <input type="submit" value="Search"/>
+</form>
+<hr/>
+
+{% if meta["qs"] != None %}
+<p><font color="green"><pre>{{ meta["qs"] }}</pre></font></p>
+<hr/>
+{% endif %}
+
+{% if docs != None %}
+
+    <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]-1 }}" role="button">Previous</a>
+    <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]+1 }}" role="button">Next</a>
+
+    <p><b>Showing {{ meta["start"] }}-{{ meta["end"] }} results of {{ meta["numFound"] }} matches for '{{ meta["q"] }}'</b></p>
+    <ol start={{ meta["start"] }}>
+    {% for doc in docs %}
+        <li>
+          <b><a href="/content?id={{ doc["id"] }}">{{ doc["title"] }} ({{ doc["year"] }})</a></b><br/>
+          <b>{{ doc["author_names"]|join(", ") }}</b>&nbsp;&nbsp;<font color="green">(Score: {{ doc["score"] }})</font><br/>
+          {{ doc["abstract"] }}
+        </li>
+    {% endfor %}
+    </ol>
+
+    <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]-1 }}" role="button">Previous</a>
+    <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]+1 }}" role="button">Next</a>
+
+{% endif %}
+
+{% endblock %}
+

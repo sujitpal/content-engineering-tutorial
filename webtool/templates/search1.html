@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+    
+{% block content %}
+
+<form class="form form-inline">
+    <dt>Search: </dt>
+    {% if meta["q"] is not none %}
+        <dd><input type="text" size="40" name="q" value="{{ meta["q"] }}"/></dd>
+    {% else %}
+        <dd><input type="text" size="40" name="q" placeholder="search"/></dd>
+    {% endif %}
+    <input type="submit" value="Search"/>
+</form>
+<hr/>
+
+{% if meta["qs"] != None %}
+    <p><font color="green"><pre>{{ meta["qs"] }}</pre></font></p>
+    <hr/>
+{% endif %}
+
+{% if docs != None %}
+
+    <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]-1 }}" role="button">Previous</a>
+    <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]+1 }}" role="button">Next</a>
+    {% if meta["keyword_fq"] is not none or meta["author_fq"] is not none %}
+        <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}" role="button">All</a>
+    {% endif %}
+
+    <p>
+        <b>
+            Showing {{ meta["start"] }}-{{ meta["end"] }} results of {{ meta["numFound"] }} matches for '{{ meta["q"] }}'
+            {% if meta["keyword_fq"] is not none %}
+                (filtered by keyword '{{ meta["keyword_fq"] }}')
+            {% endif %}
+            {% if meta["author_fq"] is not none %}
+                (filtered by author '{{ meta["author_fq"] }}')
+            {% endif %}
+        </b>
+    </p>
+
+    <div class="container-fluid">
+        <div class="row d-flex d-md-block flex-nowrap wrapper">
+            <div class="col-md-3 float-left col-1 pl-0 pr-0 collapse width show" id="sidebar">
+                <div class="list-group border-0 card text-center text-md-left">
+
+                    <a href="#menu2" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><h4>Keywords (+/-)</h4></span></a>
+                    <div class="collapse" id="menu2" data-parent="#sidebar">
+                    {% for key, count in facets["keywords"] %}
+                        <a href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&fk={{ key|urlencode }}" class="list-group-item" data-parent="#menu2">{{ key }} ({{ count }})</a>
+                    {% endfor %}
+                    </div>
+
+                    <a href="#menu3" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><h4>Authors (+/-)</h4></span></a>
+                    <div class="collapse" id="menu3" data-parent="#sidebar">
+                    {% for key, count in facets["authors"] %}
+                        <a href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&fa={{ key|urlencode }}" class="list-group-item" data-parent="#menu3">{{ key }} ({{ count }})</a>
+                    {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+            <main class="col-md-9 float-left col px-5 pl-md-2 pt-2 main">
+              <div class="row d-flex d-md-block flex-nowrap wrapper">
+                  <ol start={{ meta["start"] }}>
+                  {% for doc in docs %}
+                      <li>
+                          <b><a href="/content?id={{ doc["id"] }}">{{ doc["title"] }} ({{ doc["year"] }})</a></b><br/>
+                          <b>{{ doc["authors"]|join(", ") }}</b>&nbsp;&nbsp;<font color="green">(Score: {{ doc["score"] }})</font><br/>
+                          {{ doc["abstract"] }}
+                      </li>
+                  {% endfor %}
+                  </ol>
+              </div>
+        </main>
+    </div>
+</div>
+
+    <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]-1 }}" role="button">Previous</a>
+    <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]+1 }}" role="button">Next</a>
+    {% if meta["keyword_fq"] is not none or meta["author_fq"] is not none %}
+        <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}" role="button">All</a>
+    {% endif %}
+
+{% endif %}
+{% endblock %}
