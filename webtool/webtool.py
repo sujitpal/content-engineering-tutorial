@@ -14,12 +14,24 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/content", methods=["GET"])
-def content():
+@app.route("/content0", methods=["GET"])
+def content0():
     id = request.args.get("id")
     client = SearchClient(app.config["SOLR_INDEX_0"], app.config["NUM_RECS_PER_PAGE"])
     doc = client.get(id)
-    return render_template("content.html", doc=doc)
+    return render_template("content0.html", doc=doc)
+
+
+@app.route("/content1", methods=["GET"])
+def content1():
+    id = request.args.get("id")
+    client = SearchClient(app.config["SOLR_INDEX_2"], app.config["NUM_RECS_PER_PAGE"])
+    doc = client.get(id)
+    meta = {}
+    meta["mlt_text"] = client.get_mlt_docs(id, ["title", "abstract", "text"])
+    meta["sim_keywords"] = client.get_similar_docs(id, "keywords")
+    meta["sim_authors"] = client.get_similar_docs(id, "authors")
+    return render_template("content1.html", meta=meta, doc=doc)
 
 
 @app.route("/search0", methods=["GET", "POST"])
@@ -81,7 +93,7 @@ def search4():
     page = request.args.get("page")
     page = page if page else 1
     if q:
-        client = SearchClient(app.config["SOLR_INDEX_1"], app.config["NUM_RECS_PER_PAGE"])
+        client = SearchClient(app.config["SOLR_INDEX_2"], app.config["NUM_RECS_PER_PAGE"])
         meta, facets, docs = client.search_index1(q, fk, fa, page, "search4", 3)
     return render_template("search1.html", meta=meta, facets=facets, docs=docs)
 

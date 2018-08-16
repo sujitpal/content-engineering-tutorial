@@ -208,4 +208,46 @@ class SearchClient(object):
         return doc
 
 
+    def get_mlt_docs(self, id, fields):
+        query_str = "id:{:s}".format(id)
+        field_list = "id,title"
+        mlt_fields = ",".join(fields)
+        payload = {
+            "q": query_str, 
+            "fl": field_list,
+            "mlt": "true",
+            "mlt.fl": mlt_fields
+        }
+        params = urllib.parse.urlencode(payload, quote_via=urllib.parse.quote_plus)
+        search_url = self.solr_url + "/select?" + params
+        resp = requests.get(search_url)
+        resp_json = json.loads(resp.text)
+        mlt_docs = resp_json["moreLikeThis"][id]["docs"]
+        return mlt_docs
+
+
+    def get_similar_docs(self, id, field_name):
+        main_doc = self.get(id)
+        field_values = main_doc[field_name]
+        query_str = "{:s}:({:s})".format(field_name, " ".join(["\"" + field_value + "\"" for field_value in field_values]))
+        field_list = ",".join(["id", "title", field_name])
+        payload = {
+          "q": query_str,
+          "fl": field_list
+        } 
+        params = urllib.parse.urlencode(payload, quote_via=urllib.parse.quote_plus)
+        search_url = self.solr_url + "/select?" + params
+        resp = requests.get(search_url)
+        resp_json = json.loads(resp.text)
+        source_set = set(field_values)
+        docs = resp_json["response"]["docs"]
+        scored_docs = []
+        for doc in docs:
+            if doc["id"] == id:
+                continue
+            target_set = set(doc[field_name])
+            doc["jaccard_score"] = len(source_set.intersection(target_set)) / len(source_set.union(target_set))
+            scored_docs.append(doc)
+        sorted_docs = sorted(scored_docs, key=lambda x: x["jaccard_score"], reverse=True)
+        return sorted_docs[0:5]
 

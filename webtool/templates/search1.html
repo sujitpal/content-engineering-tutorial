@@ -64,7 +64,7 @@
                   <ol start={{ meta["start"] }}>
                   {% for doc in docs %}
                       <li>
-                          <b><a href="/content?id={{ doc["id"] }}">{{ doc["title"] }} ({{ doc["year"] }})</a></b><br/>
+                          <b><a href="/content1?id={{ doc["id"] }}">{{ doc["title"] }} ({{ doc["year"] }})</a></b><br/>
                           <b>{{ doc["authors"]|join(", ") }}</b>&nbsp;&nbsp;<font color="green">(Score: {{ doc["score"] }})</font><br/>
                           {{ doc["abstract"] }}
                       </li>

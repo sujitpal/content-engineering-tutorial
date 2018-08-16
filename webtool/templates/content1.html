@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{ doc["title"] }}</h2>
+<b>{{ doc["authors"]|join(", ") }} ({{ doc["year"] }})</b><br/>
+<hr/>
+
+<b>Abstract:</b><br/>
+{{ doc["abstract"] }}
+<hr/>
+
+<div class="container-fluid">
+    <div class="row d-flex d-md-block flex-nowrap wrapper">
+        <div class="col-md-9 float-left col-1 pl-0 pr-0 collapse width show">
+            <b>Full Text</b><br/>
+            <hr/>
+            <pre>
+                {{ doc["text"] }}
+            </pre>
+        </div>
+        <div class="col-md-3 float-left col-1 pl-0 pr-0 collapse width show" id="sidebar">
+
+            <div class="list-group border-0 card text-center text-md-left">
+                <a href="#menu1" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>MLT: text (+/-)</b></span></a>
+                <div class="collapse" id="menu1" data-parent="#sidebar">
+                    {% for rec in meta["mlt_text"] %}
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu1">{{ rec["title"] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="list-group border-0 card text-center text-md-left">
+                <a href="#menu2" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar keywords (+/-)</b></span></a>
+                <div class="collapse" id="menu2" data-parent="#sidebar">
+                    {% for rec in meta["sim_keywords"] %}
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu2">{{ rec["title"] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="list-group border-0 card text-center text-md-left">
+                <a href="#menu3" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar authors (+/-)</b></span></a>
+                <div class="collapse" id="menu3" data-parent="#sidebar">
+                    {% for rec in meta["sim_authors"] %}
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu3">{{ rec["title"] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="list-group border-0 card text-center text-md-left">
+                <a href="#menu4" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar orgs (+/-)</b></span></a>
+                <div class="collapse" id="menu4" data-parent="#sidebar">
+                    <a href="#" class="list-group-item" data-parent="#menu4">fubar</a>
+                </div>
+            </div>
+
+            <div class="list-group border-0 card text-center text-md-left">
+                <a href="#menu5" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>MLT: keywords, authors, orgs (+/-)</b></span></a>
+                <div class="collapse" id="menu5" data-parent="#sidebar">
+                    <a href="#" class="list-group-item" data-parent="#menu5">fubar</a>
+                </div>
+            </div>
+
+            <div class="list-group border-0 card text-center text-md-left">
+                <a href="#menu6" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar by Topic (+/-)</b></span></a>
+                <div class="collapse" id="menu6" data-parent="#sidebar">
+                    <a href="#" class="list-group-item" data-parent="#menu6">fubar</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
