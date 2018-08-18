@@ -51,21 +51,25 @@
             <div class="list-group border-0 card text-center text-md-left">
                 <a href="#menu4" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar orgs (+/-)</b></span></a>
                 <div class="collapse" id="menu4" data-parent="#sidebar">
-                    <a href="#" class="list-group-item" data-parent="#menu4">fubar</a>
+                    {% for rec in meta["sim_orgs"] %}
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu3">{{ rec["title"] }}</a>
+                    {% endfor %}
                 </div>
             </div>
 
             <div class="list-group border-0 card text-center text-md-left">
                 <a href="#menu5" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>MLT: keywords, authors, orgs (+/-)</b></span></a>
                 <div class="collapse" id="menu5" data-parent="#sidebar">
-                    <a href="#" class="list-group-item" data-parent="#menu5">fubar</a>
+                    {% for rec in meta["mlt_kao"] %}
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu1">{{ rec["title"] }}</a>
+                    {% endfor %}
                 </div>
             </div>
 
             <div class="list-group border-0 card text-center text-md-left">
                 <a href="#menu6" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar by Topic (+/-)</b></span></a>
                 <div class="collapse" id="menu6" data-parent="#sidebar">
-                    <a href="#" class="list-group-item" data-parent="#menu6">fubar</a>
+                    <a href="#" class="list-group-item" data-parent="#menu6">TODO</a>
                 </div>
             </div>
 

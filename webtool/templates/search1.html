@@ -22,7 +22,7 @@
 
     <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]-1 }}" role="button">Previous</a>
     <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]+1 }}" role="button">Next</a>
-    {% if meta["keyword_fq"] is not none or meta["author_fq"] is not none %}
+    {% if meta["keyword_fq"] is not none or meta["author_fq"] is not none or meta["org_fq"] is not none %}
         <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}" role="button">All</a>
     {% endif %}
 
@@ -35,6 +35,9 @@
             {% if meta["author_fq"] is not none %}
                 (filtered by author '{{ meta["author_fq"] }}')
             {% endif %}
+            {% if meta["org_fq"] is not none %}
+                (filtered by org '{{ meta["org_fq"] }}')
+            {% endif %}
         </b>
     </p>
 
@@ -43,20 +46,28 @@
             <div class="col-md-3 float-left col-1 pl-0 pr-0 collapse width show" id="sidebar">
                 <div class="list-group border-0 card text-center text-md-left">
 
-                    <a href="#menu2" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><h4>Keywords (+/-)</h4></span></a>
-                    <div class="collapse" id="menu2" data-parent="#sidebar">
+                    <a href="#menu1" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><h4>Keywords (+/-)</h4></span></a>
+                    <div class="collapse" id="menu1" data-parent="#sidebar">
                     {% for key, count in facets["keywords"] %}
-                        <a href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&fk={{ key|urlencode }}" class="list-group-item" data-parent="#menu2">{{ key }} ({{ count }})</a>
+                        <a href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&fk={{ key|urlencode }}" class="list-group-item" data-parent="#menu1">{{ key }} ({{ count }})</a>
                     {% endfor %}
                     </div>
 
-                    <a href="#menu3" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><h4>Authors (+/-)</h4></span></a>
-                    <div class="collapse" id="menu3" data-parent="#sidebar">
+                    <a href="#menu2" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><h4>Authors (+/-)</h4></span></a>
+                    <div class="collapse" id="menu2" data-parent="#sidebar">
                     {% for key, count in facets["authors"] %}
-                        <a href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&fa={{ key|urlencode }}" class="list-group-item" data-parent="#menu3">{{ key }} ({{ count }})</a>
+                        <a href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&fa={{ key|urlencode }}" class="list-group-item" data-parent="#menu2">{{ key }} ({{ count }})</a>
                     {% endfor %}
                     </div>
 
+                    <a href="#menu3" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><h4>Organizations (+/-)</h4></span></a>
+                    <div class="collapse" id="menu3" data-parent="#sidebar">
+                    {% for key, count in facets["orgs"] %}
+                        <a href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&fo={{ key|urlencode }}" class="list-group-item" data-parent="#menu3">{{ key }} ({{ count }})</a>
+                    {% endfor %}
+                    </div>
+
+                </div>
                 </div>
             </div>
             <main class="col-md-9 float-left col px-5 pl-md-2 pt-2 main">
@@ -73,12 +84,14 @@
               </div>
         </main>
     </div>
-</div>
 
     <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]-1 }}" role="button">Previous</a>
     <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}&page={{ meta["page"]+1 }}" role="button">Next</a>
-    {% if meta["keyword_fq"] is not none or meta["author_fq"] is not none %}
+    {% if meta["keyword_fq"] is not none or meta["author_fq"] is not none or meta["org_fq"] is not none %}
         <a class="btn btn-primary" href="/{{ meta["cmd"] }}?q={{ meta["q"] }}" role="button">All</a>
+
+</div>
+
     {% endif %}
 
 {% endif %}

@@ -143,7 +143,7 @@ class SearchClient(object):
         return " ".join(clauses)
 
         
-    def search_index1(self, query, keyword_facet, author_facet, page, search_cmd, search_type):
+    def search_index1(self, query, keyword_facet, author_facet, org_facet, page, search_cmd, search_type):
         query_str = None
         query_str = None
         if search_type == 0:
@@ -165,12 +165,15 @@ class SearchClient(object):
             ("rows", self.num_records_per_page),
             ("facet", "on"),
             ("facet.field", "keywords"),
-            ("facet.field", "authors")
+            ("facet.field", "authors"),
+            ("facet.field", "orgs")
         ]
         if keyword_facet:
             url_params.append(("fq", "keywords:\"" + keyword_facet + "\""))
         if author_facet:
-           url_params.append(("fq", "authors:\"" + author_facet + "\""))
+            url_params.append(("fq", "authors:\"" + author_facet + "\""))
+        if org_facet:
+            url_params.append(("fq", "orgs:\"" + org_facet + "\""))
         params = urllib.parse.urlencode(url_params, 
                                         quote_via=urllib.parse.quote_plus)
         search_url = self.solr_url + "/select?" + params
@@ -188,11 +191,13 @@ class SearchClient(object):
             "start": start_offset,
             "end": end_offset,
             "keyword_fq": keyword_facet,
-            "author_fq": author_facet
+            "author_fq": author_facet,
+            "org_fq": org_facet
         }
         facets = {}
         facets["keywords"] = self.compose_facet_data(resp_json, "keywords")
         facets["authors"] = self.compose_facet_data(resp_json, "authors")
+        facets["orgs"] = self.compose_facet_data(resp_json, "orgs")
         return meta, facets, docs
 
 
@@ -241,6 +246,7 @@ class SearchClient(object):
         resp_json = json.loads(resp.text)
         source_set = set(field_values)
         docs = resp_json["response"]["docs"]
+        # ranking is close, but not perfect because of IDF, so rerank by jaccard
         scored_docs = []
         for doc in docs:
             if doc["id"] == id:

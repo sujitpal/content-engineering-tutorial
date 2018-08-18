@@ -31,6 +31,8 @@ def content1():
     meta["mlt_text"] = client.get_mlt_docs(id, ["title", "abstract", "text"])
     meta["sim_keywords"] = client.get_similar_docs(id, "keywords")
     meta["sim_authors"] = client.get_similar_docs(id, "authors")
+    meta["sim_orgs"] = client.get_similar_docs(id, "orgs")
+    meta["mlt_kao"] = client.get_mlt_docs(id, ["kaoterms"])
     return render_template("content1.html", meta=meta, doc=doc)
 
 
@@ -90,11 +92,12 @@ def search4():
     q = request.args.get("q")
     fk = request.args.get("fk")
     fa = request.args.get("fa")
+    fo = request.args.get("fo")
     page = request.args.get("page")
     page = page if page else 1
     if q:
         client = SearchClient(app.config["SOLR_INDEX_2"], app.config["NUM_RECS_PER_PAGE"])
-        meta, facets, docs = client.search_index1(q, fk, fa, page, "search4", 3)
+        meta, facets, docs = client.search_index1(q, fk, fa, fo, page, "search4", 3)
     return render_template("search1.html", meta=meta, facets=facets, docs=docs)
 
 

@@ -57,5 +57,20 @@ curl -X POST -H "Content-Type: application/json" http://localhost:8983/solr/nips
         "stored": true,
         "indexed": true,
         "multiValued": true
+    },
+    "add-field": {
+        "name": "orgs",
+        "type": "string",
+        "stored": true,
+        "indexed": true,
+        "multiValued": true
+    },
+    "add-field": {
+        "name": "kaoterms",
+        "type": "text",
+        "stored": true,
+        "indexed": true,
+        "multiValued": false,
+        "termVectors": true
     }
 }'
