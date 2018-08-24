@@ -1,5 +1,7 @@
 import ahocorasick
 import json
+import pickle
+import numpy as np
 import os
 import requests
 import urllib
@@ -19,6 +21,10 @@ class SearchClient(object):
                 os.path.exists("../data/keyword_neardup_mappings.tsv") and 
                 os.path.exists("../data/keyword_dedupe_mappings.tsv")):
             self.automaton = self.build_automaton()
+        if os.path.exists("../data/topic_sims.npy"):
+            self.topic_sims = np.load("../data/topic_sims.npy")
+            self.topic_doc2corpus = pickle.load(open("../data/topic_docid2corpus.pkl", "rb"))
+            self.topic_corpus2doc = {v:k for k, v in self.topic_doc2corpus.items()}
 
 
     def build_automaton(self):
@@ -255,5 +261,30 @@ class SearchClient(object):
             doc["jaccard_score"] = len(source_set.intersection(target_set)) / len(source_set.union(target_set))
             scored_docs.append(doc)
         sorted_docs = sorted(scored_docs, key=lambda x: x["jaccard_score"], reverse=True)
+        return sorted_docs[0:5]
+
+
+    def get_vecsim_docs(self, id, vec_name):
+        row = self.topic_sims[self.topic_doc2corpus[int(id)], :]
+        target_ids = [self.topic_corpus2doc[x] for x in np.argsort(-row)[0:6].tolist()]
+        query_str = "id:({:s})".format(" ".join(['"' + str(x) + '"' for x in target_ids]))
+        field_list = ",".join(["id", "title"])
+        payload = {
+          "q": query_str,
+          "fl": field_list
+        } 
+        params = urllib.parse.urlencode(payload, quote_via=urllib.parse.quote_plus)
+        search_url = self.solr_url + "/select?" + params
+        resp = requests.get(search_url)
+        resp_json = json.loads(resp.text)
+        docs = resp_json["response"]["docs"]
+        doc2title = {}
+        for doc in docs:
+            doc2title[int(doc["id"])] = doc["title"]
+        sorted_docs = []
+        for tid in target_ids:
+            if tid == int(id):
+                continue
+            sorted_docs.append({"id": str(tid), "title": doc2title[tid]})
         return sorted_docs[0:5]
 

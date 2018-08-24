@@ -69,7 +69,9 @@
             <div class="list-group border-0 card text-center text-md-left">
                 <a href="#menu6" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar by Topic (+/-)</b></span></a>
                 <div class="collapse" id="menu6" data-parent="#sidebar">
-                    <a href="#" class="list-group-item" data-parent="#menu6">TODO</a>
+                    {% for rec in meta["vec_topic"] %}
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu1">{{ rec["title"] }}</a>
+                    {% endfor %}
                 </div>
             </div>
 
