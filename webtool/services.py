@@ -1,4 +1,5 @@
 import ahocorasick
+import gensim
 import json
 import pickle
 import numpy as np
@@ -25,6 +26,12 @@ class SearchClient(object):
             self.topic_sims = np.load("../data/topic_sims.npy")
             self.topic_doc2corpus = pickle.load(open("../data/topic_docid2corpus.pkl", "rb"))
             self.topic_corpus2doc = {v:k for k, v in self.topic_doc2corpus.items()}
+        if os.path.exists("../data/w2v_sims.npy"):
+            self.w2v_sims = np.load("../data/w2v_sims.npy")
+            self.w2v_doc2corpus = pickle.load(open("../data/w2v_docid2corpus.pkl", "rb"))
+            self.w2v_corpus2doc = {v:k for k, v in self.w2v_doc2corpus.items()}
+        if os.path.exists("../models/doc2vec_model.gensim"):
+            self.d2v_model = gensim.models.doc2vec.Doc2Vec.load("../models/doc2vec_model.gensim")
 
 
     def build_automaton(self):
@@ -239,6 +246,8 @@ class SearchClient(object):
 
     def get_similar_docs(self, id, field_name):
         main_doc = self.get(id)
+        if field_name not in main_doc.keys():
+            return []
         field_values = main_doc[field_name]
         query_str = "{:s}:({:s})".format(field_name, " ".join(["\"" + field_value + "\"" for field_value in field_values]))
         field_list = ",".join(["id", "title", field_name])
@@ -265,8 +274,14 @@ class SearchClient(object):
 
 
     def get_vecsim_docs(self, id, vec_name):
-        row = self.topic_sims[self.topic_doc2corpus[int(id)], :]
-        target_ids = [self.topic_corpus2doc[x] for x in np.argsort(-row)[0:6].tolist()]
+        if vec_name == "topic":
+            row = self.topic_sims[self.topic_doc2corpus[int(id)], :]
+            target_ids = [self.topic_corpus2doc[x] for x in np.argsort(-row)[0:6].tolist()]
+        elif vec_name == "w2v":
+            row = self.w2v_sims[self.w2v_doc2corpus[int(id)], :]
+            target_ids = [self.w2v_corpus2doc[x] for x in np.argsort(-row)[0:6].tolist()]
+        else:
+            return []
         query_str = "id:({:s})".format(" ".join(['"' + str(x) + '"' for x in target_ids]))
         field_list = ",".join(["id", "title"])
         payload = {
@@ -287,4 +302,29 @@ class SearchClient(object):
                 continue
             sorted_docs.append({"id": str(tid), "title": doc2title[tid]})
         return sorted_docs[0:5]
+
+
+    def get_doc2vec_docs(self, id):
+        sim_docs = self.d2v_model.docvecs.most_similar(positive=[int(id)], negative=[], topn=5)
+        target_ids = [tid for tid, score in sim_docs]
+        query_str = "id:({:s})".format(" ".join(['"' + str(x) + '"' for x in target_ids]))
+        field_list = ",".join(["id", "title"])
+        payload = {
+          "q": query_str,
+          "fl": field_list
+        } 
+        params = urllib.parse.urlencode(payload, quote_via=urllib.parse.quote_plus)
+        search_url = self.solr_url + "/select?" + params
+        resp = requests.get(search_url)
+        resp_json = json.loads(resp.text)
+        docs = resp_json["response"]["docs"]
+        doc2title = {}
+        for doc in docs:
+            doc2title[int(doc["id"])] = doc["title"]
+        sorted_docs = []
+        for tid in target_ids:
+            if tid == int(id):
+                continue
+            sorted_docs.append({"id": str(tid), "title": doc2title[tid]})
+        return sorted_docs
 

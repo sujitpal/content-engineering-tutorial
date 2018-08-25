@@ -52,7 +52,7 @@
                 <a href="#menu4" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar orgs (+/-)</b></span></a>
                 <div class="collapse" id="menu4" data-parent="#sidebar">
                     {% for rec in meta["sim_orgs"] %}
-                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu3">{{ rec["title"] }}</a>
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu4">{{ rec["title"] }}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -61,7 +61,7 @@
                 <a href="#menu5" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>MLT: keywords, authors, orgs (+/-)</b></span></a>
                 <div class="collapse" id="menu5" data-parent="#sidebar">
                     {% for rec in meta["mlt_kao"] %}
-                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu1">{{ rec["title"] }}</a>
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu5">{{ rec["title"] }}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -70,7 +70,25 @@
                 <a href="#menu6" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar by Topic (+/-)</b></span></a>
                 <div class="collapse" id="menu6" data-parent="#sidebar">
                     {% for rec in meta["vec_topic"] %}
-                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu1">{{ rec["title"] }}</a>
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu6">{{ rec["title"] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="list-group border-0 card text-center text-md-left">
+                <a href="#menu7" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar by Word2Vec (+/-)</b></span></a>
+                <div class="collapse" id="menu7" data-parent="#sidebar">
+                    {% for rec in meta["vec_w2v"] %}
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu7">{{ rec["title"] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="list-group border-0 card text-center text-md-left">
+                <a href="#menu8" class="list-group-item d-inline-block collapsed" data-toggle="collapse" aria-expanded="false"><i class="fa fa-book"></i> <span class="d-none d-md-inline"><b>Similar by Doc2Vec (+/-)</b></span></a>
+                <div class="collapse" id="menu8" data-parent="#sidebar">
+                    {% for rec in meta["d2v_sims"] %}
+                        <a href="/content1?id={{ rec["id"] }}" class="list-group-item" data-parent="#menu8">{{ rec["title"] }}</a>
                     {% endfor %}
                 </div>
             </div>

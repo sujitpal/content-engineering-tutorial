@@ -34,6 +34,8 @@ def content1():
     meta["sim_orgs"] = client.get_similar_docs(id, "orgs")
     meta["mlt_kao"] = client.get_mlt_docs(id, ["kaoterms"])
     meta["vec_topic"] = client.get_vecsim_docs(id, "topic")
+    meta["vec_w2v"] = client.get_vecsim_docs(id, "w2v")
+    meta["d2v_sims"] = client.get_doc2vec_docs(id)
     return render_template("content1.html", meta=meta, doc=doc)
 
 
