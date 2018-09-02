@@ -15,6 +15,8 @@ Finally, the notebooks and web application both use [Solr 7.x](http://lucene.apa
     cd <solr_home>
     bin/solr start
 
+The codebase consists of a set of notebooks under the [notebooks](notebooks) folder and a Flask based web application under the [webtool](webtool) folder that provides a front end to showcase the application of outputs of the various content engineering techniques against a search index containing the NIPS papers.
+
 To run the notebook server, navigate to the notebooks subdirectory, and then run the following command. By default, the default URL to navigate to on your browser to access the notebooks is [http://localhost:8888/](http://localhost:8888). You can also find the URL from the server logs that are written out on the console.
 
     cd <project_home>/notebooks
